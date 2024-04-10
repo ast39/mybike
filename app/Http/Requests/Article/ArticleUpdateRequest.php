@@ -24,14 +24,14 @@ class ArticleUpdateRequest extends FormRequest
     {
         return [
 
-            'bike_id'    => 'integer|nullable',
-            'article'    => 'string|nullable',
-            'title'      => 'string|nullable',
-            'price'      => [
+            'bike_id' => ['integer', 'nullable', 'exists:bikes,bike_id'],
+            'article' => ['string', 'nullable'],
+            'title' => ['string', 'nullable'],
+            'price' => [
                 'nullable',
                 'regex:/^[-+]?\d+(\.\d{1,2})?$/',
             ],
-            'additional' => 'string|nullable',
+            'additional' => ['string', 'nullable'],
         ];
     }
 }

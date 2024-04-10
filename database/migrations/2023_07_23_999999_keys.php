@@ -53,6 +53,32 @@ return new class extends Migration
                 ->references('bike_id')
                 ->on('bikes');
         });
+
+        Schema::table('gas', function(Blueprint $table) {
+
+            $table->foreign('client_id', 'gas_client_key')
+                ->references('id')
+                ->on('users');
+
+            $table->foreign('bike_id', 'gas_bike_key')
+                ->references('bike_id')
+                ->on('bikes');
+        });
+
+        Schema::table('payments', function(Blueprint $table) {
+
+            $table->foreign('type_id', 'payment_type_key')
+                ->references('type_id')
+                ->on('payment_types');
+
+            $table->foreign('client_id', 'payment_client_key')
+                ->references('id')
+                ->on('users');
+
+            $table->foreign('bike_id', 'payment_bike_key')
+                ->references('bike_id')
+                ->on('bikes');
+        });
     }
 
     /**
@@ -77,6 +103,17 @@ return new class extends Migration
         Schema::table('notes', function(Blueprint $table) {
             $table->dropForeign('note_client_key');
             $table->dropForeign('note_bike_key');
+        });
+
+        Schema::table('gas', function(Blueprint $table) {
+            $table->dropForeign('gas_client_key');
+            $table->dropForeign('gas_bike_key');
+        });
+
+        Schema::table('payments', function(Blueprint $table) {
+            $table->dropForeign('payment_type_key');
+            $table->dropForeign('payment_client_key');
+            $table->dropForeign('payment_bike_key');
         });
     }
 };

@@ -11,7 +11,7 @@
         <div class="mmot-filterline">
             <div class="mmot-filterline">
                 <div class="mmot-filterline__one" data-input_clear_content>
-                    <select name="bike" id="bike" class="form-select form-control">
+                    <select name="car" id="car" class="form-select form-control">
                         <option title="{{ __('Мотоцикл') }}" {{ (request()->bike ?? 0) == 0 ? 'selected' : '' }} value="0">{{ __('Мотоцикл') }}</option>
                         @forelse($bikes as $bike)
                             <option title="{{ Helper::bikeName($bike) }}" {{ (request()->bike ?? 0) == $bike['bike_id'] ? 'selected' : '' }} value="{{ $bike['bike_id'] }}">{{ Helper::bikeName($bike) }}</option>

@@ -4,7 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\Bike;
 use App\Models\Article;
-use App\Models\MotoMark;
+use App\Models\BikeMark;
 use App\Models\Note;
 use App\Models\Service;
 use App\Models\User;
@@ -20,27 +20,27 @@ class BikeMarkSeeder extends Seeder {
      */
     public function run()
     {
-        MotoMark::create(['title' => 'Aprilia']);
-        MotoMark::create(['title' => 'Bajaj']);
-        MotoMark::create(['title' => 'Benelli']);
-        MotoMark::create(['title' => 'BMW']);
-        MotoMark::create(['title' => 'Buell']);
-        MotoMark::create(['title' => 'CF Moto']);
-        MotoMark::create(['title' => 'CZ Jawa']);
-        MotoMark::create(['title' => 'Ducati']);
-        MotoMark::create(['title' => 'Harley Davidson']);
-        MotoMark::create(['title' => 'Honda']);
-        MotoMark::create(['title' => 'Huaqvarna']);
-        MotoMark::create(['title' => 'Indian']);
-        MotoMark::create(['title' => 'Kawasaki']);
-        MotoMark::create(['title' => 'KTM']);
-        MotoMark::create(['title' => 'Minsk']);
-        MotoMark::create(['title' => 'Moto Guzzi']);
-        MotoMark::create(['title' => 'MV Augusta']);
-        MotoMark::create(['title' => 'Piaggio']);
-        MotoMark::create(['title' => 'Suzuki']);
-        MotoMark::create(['title' => 'Triumph']);
-        MotoMark::create(['title' => 'Victory']);
-        MotoMark::create(['title' => 'Yamaha']);
+        BikeMark::create(['title' => 'Aprilia']);
+        BikeMark::create(['title' => 'Bajaj']);
+        BikeMark::create(['title' => 'Benelli']);
+        BikeMark::create(['title' => 'BMW']);
+        BikeMark::create(['title' => 'Buell']);
+        BikeMark::create(['title' => 'CF Moto']);
+        BikeMark::create(['title' => 'CZ Jawa']);
+        BikeMark::create(['title' => 'Ducati']);
+        BikeMark::create(['title' => 'Harley Davidson']);
+        BikeMark::create(['title' => 'Honda']);
+        BikeMark::create(['title' => 'Huaqvarna']);
+        BikeMark::create(['title' => 'Indian']);
+        BikeMark::create(['title' => 'Kawasaki']);
+        BikeMark::create(['title' => 'KTM']);
+        BikeMark::create(['title' => 'Minsk']);
+        BikeMark::create(['title' => 'Moto Guzzi']);
+        BikeMark::create(['title' => 'MV Augusta']);
+        BikeMark::create(['title' => 'Piaggio']);
+        BikeMark::create(['title' => 'Suzuki']);
+        BikeMark::create(['title' => 'Triumph']);
+        BikeMark::create(['title' => 'Victory']);
+        BikeMark::create(['title' => 'Yamaha']);
     }
 }

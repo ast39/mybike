@@ -36,7 +36,7 @@ class Article extends Model {
     }
 
     /**
-     * Байк
+     * Машина
      *
      * @return BelongsTo
      */

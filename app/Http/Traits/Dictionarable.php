@@ -2,45 +2,48 @@
 
 namespace App\Http\Traits;
 
-use App\Models\Bike;
+use App\Libs\Helper;
 use App\Models\Article;
-use App\Models\MotoMark;
+use App\Models\Bike;
+use App\Models\BikeMark;
 use App\Models\Note;
-use App\Models\User;
+use App\Models\PaymentType;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Auth;
 
 trait Dictionarable {
 
     /**
-     * Все клиенты
+     * Все валюты
      *
      * @return array
      */
-    protected function marks(): array
+    private function marks(): array
     {
-        return MotoMark::all()->toArray();
-    }
-
-    /**
-     * Все клиенты
-     *
-     * @return array
-     */
-    protected function clients(): array
-    {
-        return User::all()->toArray();
+        return BikeMark::all()->sortBy('title')->toArray();
     }
 
     /**
      * Все мотоциклы
      *
-     * @return array
+     * @return array|null
      */
-    protected function bikes(): array
+    protected function bikes():? Collection
     {
-        return Bike::where('owner_id', Auth::id())
-            ->get()
-            ->toArray();
+        if (!Auth::check()) {
+            return null;
+        }
+
+        if (Helper::isAdmin()) {
+            return Bike::with(['owner', 'works', 'catalog', 'gasoline', 'payments', 'notes'])
+                ->orderBy('mark_id')
+                ->orderBy('model')
+                ->get();
+        } else {
+            return Bike::with(['owner', 'works', 'catalog', 'gasoline', 'payments', 'notes'])
+                ->where('owner_id', Auth::id())
+                ->get();
+        }
     }
 
     /**
@@ -50,9 +53,15 @@ trait Dictionarable {
      */
     protected function articles(): array
     {
-        return Article::where('client_id', Auth::id())
-            ->get()
-            ->toArray();
+        if (Helper::isAdmin()) {
+            return Article::orderBy('article')
+                ->get()
+                ->toArray();
+        } else {
+            return Article::where('client_id', Auth::id())
+                ->get()
+                ->toArray();
+        }
     }
 
     /**
@@ -66,4 +75,15 @@ trait Dictionarable {
             ->get()
             ->toArray();
     }
+
+    /**
+     * Все типы трат
+     *
+     * @return array
+     */
+    private function payment_types(): array
+    {
+        return PaymentType::all()->sortBy('title')->toArray();
+    }
+
 }

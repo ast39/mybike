@@ -24,13 +24,13 @@ class BikeUpdateRequest extends FormRequest
     {
         return [
 
-            'mark_id'    => 'integer|nullable',
-            'model'      => 'string|nullable',
-            'year'       => 'integer|nullable',
-            'volume'     => 'integer|nullable',
-            'vin'        => 'string|nullable',
-            'number'     => 'string|nullable',
-            'additional' => 'string|nullable',
+            'mark_id' => ['integer', 'nullable', 'exists:moto_marks,mark_id'],
+            'model' => ['string', 'nullable'],
+            'year' => ['integer', 'nullable'],
+            'volume' => ['integer', 'nullable'],
+            'vin' => ['string', 'nullable'],
+            'number' => ['string', 'nullable'],
+            'additional' => ['string', 'nullable'],
         ];
     }
 }

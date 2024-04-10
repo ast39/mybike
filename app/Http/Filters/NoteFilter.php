@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Builder;
 class NoteFilter extends AbstractFilter {
 
     public const PHRASE = 'phrase';
-    public const BIKE   = 'bike';
+    public const BIKE    = 'bike';
 
     /**
      * @return array[]
@@ -17,7 +17,7 @@ class NoteFilter extends AbstractFilter {
         return [
 
             self::PHRASE => [$this, 'phrase'],
-            self::BIKE   => [$this, 'bike'],
+            self::BIKE    => [$this, 'bike'],
         ];
     }
 

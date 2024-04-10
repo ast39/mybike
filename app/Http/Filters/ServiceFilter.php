@@ -6,7 +6,8 @@ use Illuminate\Database\Eloquent\Builder;
 
 class ServiceFilter extends AbstractFilter {
 
-    public const BIKE    = 'bike';
+    public const BIKE     = 'bike';
+    public const TITLE   = 'title';
     public const SERVICE = 'service';
     public const STATUS  = 'status';
 
@@ -17,7 +18,8 @@ class ServiceFilter extends AbstractFilter {
     {
         return [
 
-            self::BIKE    => [$this, 'bike'],
+            self::BIKE     => [$this, 'bike'],
+            self::TITLE   => [$this, 'title'],
             self::SERVICE => [$this, 'service'],
             self::STATUS  => [$this, 'status'],
         ];
@@ -31,6 +33,16 @@ class ServiceFilter extends AbstractFilter {
     public function bike(Builder $builder, $value): void
     {
         $builder->where('bike_id', $value);
+    }
+
+    /**
+     * @param Builder $builder
+     * @param $value
+     * @return void
+     */
+    public function title(Builder $builder, $value): void
+    {
+        $builder->where('title', 'like', '%' . $value . '%');
     }
 
     /**

@@ -24,10 +24,11 @@ class NoteStoreRequest extends FormRequest
     {
         return [
 
-            'bike_id'    => 'integer|required',
-            'title'      => 'string|required',
-            'additional' => 'string|required',
-            'mileage'    => 'integer|nullable',
+            'bike_id' => ['integer', 'required', 'exists:bikes,bike_id'],
+            'title' => ['string', 'required'],
+            'note_date' => ['date', 'nullable'],
+            'additional' => ['string', 'required'],
+            'mileage' => ['integer', 'nullable'],
         ];
     }
 }

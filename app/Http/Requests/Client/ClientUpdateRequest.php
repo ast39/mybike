@@ -24,10 +24,8 @@ class ClientUpdateRequest extends FormRequest
     {
         return [
 
-            'name'    => 'string|nullable',
-            'email'   => 'string|nullable',
-            'year'    => 'integer|nullable',
-            'card_id' => 'integer|nullable',
+            'name' => ['string', 'nullable'],
+            'email' => ['string', 'nullable'],
         ];
     }
 }

@@ -23,9 +23,9 @@ class BikeFilterRequest extends FormRequest
     {
         return [
 
-            'mark' => 'nullable|integer',
-            'vin'  => 'nullable|string',
-            'year' => 'nullable|integer',
+            'mark' => ['nullable', 'integer'],
+            'vin'  => ['nullable', 'string'],
+            'year' => ['nullable', 'integer'],
         ];
     }
 }

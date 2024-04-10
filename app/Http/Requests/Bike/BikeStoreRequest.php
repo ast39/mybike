@@ -24,13 +24,13 @@ class BikeStoreRequest extends FormRequest
     {
         return [
 
-            'mark_id'    => 'integer|required',
-            'model'      => 'string|required',
-            'year'       => 'integer|required',
-            'volume'     => 'integer|required',
-            'vin'        => 'string|nullable',
-            'number'     => 'string|nullable',
-            'additional' => 'string|nullable',
+            'mark_id' => ['integer', 'required', 'exists:moto_marks,mark_id'],
+            'model' => ['string', 'required'],
+            'year' => ['integer', 'required'],
+            'volume' => ['integer', 'required'],
+            'vin' => ['string', 'nullable'],
+            'number' => ['string', 'nullable'],
+            'additional' => ['string', 'nullable'],
         ];
     }
 }

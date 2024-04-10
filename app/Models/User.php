@@ -2,19 +2,21 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Http\Traits\Filterable;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
-class User extends Authenticatable
+class User extends Authenticatable implements MustVerifyEmail
 {
-    use HasApiTokens, HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, Notifiable, Filterable;
+
 
     /**
-     * Байки клиента
+     * Автомобили клиента
      *
      * @return HasMany
      */
@@ -101,14 +103,13 @@ class User extends Authenticatable
         'updated_at'        => 'timestamp',
     ];
 
-
     /**
      * The attributes that are mass assignable.
      *
      * @var array<int, string>
      */
     protected $fillable = [
-        'name', 'email', 'password', 'year', 'card_id', 'status',
+        'name', 'email', 'password',
     ];
 
     /**
@@ -117,6 +118,8 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $hidden = [
-        'password', 'remember_token',
+        'password',
+        'remember_token',
     ];
+
 }

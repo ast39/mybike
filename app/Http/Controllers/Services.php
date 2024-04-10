@@ -7,6 +7,7 @@ use App\Http\Requests\Service\ServiceFilterRequest;
 use App\Http\Requests\Service\ServiceStoreRequest;
 use App\Http\Requests\Service\ServiceUpdateRequest;
 use App\Http\Traits\Dictionarable;
+use App\Libs\Helper;
 use App\Models\Service;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Http\RedirectResponse;
@@ -33,10 +34,17 @@ class Services extends Controller {
             'queryParams' => array_filter($data)
         ]);
 
-        return view('service.index', [
-            'works' => Service::filter($filter)
+        $works = Helper::isAdmin()
+            ? Service::filter($filter)
                 ->orderByDesc('created_at')
-                ->paginate(20),
+                ->paginate(config('limits.works'))
+            : Service::filter($filter)
+                ->where('client_id', Auth::id())
+                ->orderByDesc('created_at')
+                ->paginate(config('limits.works'));
+
+        return view('service.index', [
+            'works' => $works,
             'bikes' => $this->bikes(),
         ]);
     }
@@ -64,6 +72,9 @@ class Services extends Controller {
         $data = $request->validated();
 
         $data['client_id'] = Auth::id();
+        if (!is_null($data['service_date'] ?: null)) {
+            $data['created_at'] = strtotime($data['service_date']);
+        }
 
         return redirect()->route('service.show', Service::create($data)->record_id);
     }
@@ -76,11 +87,16 @@ class Services extends Controller {
      */
     public function show(int $id): View
     {
-        $work = Service::with(['client', 'bike'])
-            ->findOrFail($id);
+        $work = Helper::isAdmin()
+            ? Service::with(['client', 'bike'])
+                ->findOrFail($id)
+            : Service::with(['client', 'bike'])
+                ->where('client_id', Auth::id())
+                ->findOrFail($id);
 
         return view('service.show', [
             'work' => $work,
+            'bikes' => $this->bikes(),
         ]);
     }
 
@@ -92,11 +108,12 @@ class Services extends Controller {
      */
     public function edit(int $id): View
     {
-        $work = Service::findOrFail($id);
+        $work = Service::where('client_id', Auth::id())
+            ->findOrFail($id);
 
         return view('service.edit', [
             'work'  => $work,
-            'bikes' => $this->bikes(),
+            'bikes'  => $this->bikes(),
         ]);
     }
 
@@ -110,6 +127,10 @@ class Services extends Controller {
     public function update(ServiceUpdateRequest $request, int $id): RedirectResponse
     {
         $data = $request->validated();
+
+        if (!is_null($data['service_date'] ?: null)) {
+            $data['created_at'] = strtotime($data['service_date']);
+        }
 
         $work = Service::find($id);
 

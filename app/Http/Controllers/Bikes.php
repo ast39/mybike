@@ -7,6 +7,7 @@ use App\Http\Requests\Bike\BikeFilterRequest;
 use App\Http\Requests\Bike\BikeStoreRequest;
 use App\Http\Requests\Bike\BikeUpdateRequest;
 use App\Http\Traits\Dictionarable;
+use App\Libs\Helper;
 use App\Models\Bike;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Http\RedirectResponse;
@@ -19,7 +20,7 @@ class Bikes extends Controller {
 
 
     /**
-     * Список байков
+     * Список авто
      *
      * @param BikeFilterRequest $request
      * @return View
@@ -33,16 +34,23 @@ class Bikes extends Controller {
             'queryParams' => array_filter($data)
         ]);
 
+        $bikes = Helper::isAdmin()
+            ? Bike::filter($filter)
+                ->orderByDesc('created_at')
+                ->paginate(config('limits.bikes'))
+            : Bike::where('owner_id', Auth::id())
+                ->filter($filter)
+                ->orderByDesc('created_at')
+                ->paginate(config('limits.bikes'));
+
         return view('bike.index', [
-            'bikes' => Bike::filter($filter)
-                ->orderBy('mark_id')
-                ->paginate(20),
+            'bikes'  => $bikes,
             'marks' => $this->marks(),
         ]);
     }
 
     /**
-     * Форма добавления байка
+     * Форма добавления авто
      *
      * @return View
      */
@@ -50,11 +58,12 @@ class Bikes extends Controller {
     {
         return view('bike.create', [
             'marks' => $this->marks(),
+            'bikes'  => $this->bikes(),
         ]);
     }
 
     /**
-     * Сохранение нового байка
+     * Сохранение нового авто
      *
      * @param BikeStoreRequest $request
      * @return RedirectResponse
@@ -69,39 +78,48 @@ class Bikes extends Controller {
     }
 
     /**
-     * Страница байка
+     * Страница авто
      *
      * @param int $id
      * @return View
      */
     public function show(int $id): View
     {
-        $bike = Bike::with(['owner', 'works', 'catalog', 'notes'])
-            ->findOrFail($id);
+        $bike = Helper::isAdmin()
+            ? Bike::with(['owner', 'works', 'catalog', 'gasoline', 'payments', 'notes'])
+                ->findOrFail($id)
+            : Bike::with(['owner', 'works', 'catalog', 'gasoline', 'payments', 'notes'])
+                ->where('owner_id', Auth::id())
+                ->findOrFail($id);
 
         return view('bike.show', [
+            'bikes' => $this->bikes(),
             'bike'  => $bike,
+            'bike_id' => $bike->bike_id,
         ]);
     }
 
     /**
-     * Страница редактирования байка
+     * Страница редактирования авто
      *
      * @param int $id
      * @return View
      */
     public function edit(int $id): View
     {
-        $bike = Bike::findOrFail($id);
+        $bike = Bike::where('owner_id', Auth::id())
+            ->where('owner_id', Auth::id())
+            ->findOrFail($id);
 
         return view('bike.edit', [
-            'bike'  => $bike,
+            'bike'   => $bike,
             'marks' => $this->marks(),
+            'bikes'  => $this->bikes(),
         ]);
     }
 
     /**
-     * Обновление данных о байке
+     * Обновление данных об авто
      *
      * @param BikeUpdateRequest $request
      * @param int $id
@@ -114,11 +132,11 @@ class Bikes extends Controller {
         $bike = Bike::find($id);
 
         if (is_null($bike)) {
-            return back()->withErrors(['action' => 'Байк не найден']);
+            return back()->withErrors(['action' => 'Автомобиль не найден']);
         }
 
         if ($bike->owner_id != Auth::id()) {
-            return back()->withErrors(['action' => 'Нельзя изменять чужой мотоцикл']);
+            return back()->withErrors(['action' => 'Нельзя изменять чужой автомобиль']);
         }
 
         $bike->update($data);
@@ -127,7 +145,7 @@ class Bikes extends Controller {
     }
 
     /**
-     * Удаление байка
+     * Удаление авто
      *
      * @param int $id
      * @return RedirectResponse
@@ -137,11 +155,11 @@ class Bikes extends Controller {
         $bike = Bike::find($id);
 
         if (is_null($bike)) {
-            return back()->withErrors(['action' => 'Байк не найден']);
+            return back()->withErrors(['action' => 'Автомобиль не найден']);
         }
 
         if ($bike->owner_id != Auth::id()) {
-            return back()->withErrors(['action' => 'Нельзя удалять чужой мотоцикл']);
+            return back()->withErrors(['action' => 'Нельзя удалять чужой автомобиль']);
         }
 
         $bike->delete();

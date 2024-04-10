@@ -7,6 +7,7 @@ use App\Http\Requests\Note\NoteFilterRequest;
 use App\Http\Requests\Note\NoteStoreRequest;
 use App\Http\Requests\Note\NoteUpdateRequest;
 use App\Http\Traits\Dictionarable;
+use App\Libs\Helper;
 use App\Models\Note;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Http\RedirectResponse;
@@ -33,11 +34,19 @@ class Notes extends Controller {
             'queryParams' => array_filter($data)
         ]);
 
-        return view('note.index', [
-            'notes' => Note::with('bike')
+        $notes = Helper::isAdmin()
+            ? Note::with('bike')
                 ->filter($filter)
-                ->orderBy('title')
-                ->paginate(20),
+                ->orderByDesc('created_at')
+                ->paginate(config('limits.notes'))
+            : Note::with('bike')
+                ->where('client_id', Auth::id())
+                ->filter($filter)
+                ->orderByDesc('created_at')
+                ->paginate(config('limits.notes'));
+
+        return view('note.index', [
+            'notes' => $notes,
             'bikes' => $this->bikes(),
         ]);
     }
@@ -65,6 +74,9 @@ class Notes extends Controller {
         $data = $request->validated();
 
         $data['client_id'] = Auth::id();
+        if (!is_null($data['note_date'] ?: null)) {
+            $data['created_at'] = strtotime($data['note_date']);
+        }
 
         return redirect()->route('note.show', Note::create($data)->note_id);
     }
@@ -77,11 +89,16 @@ class Notes extends Controller {
      */
     public function show(int $id): View
     {
-        $note = Note::with(['client', 'bike'])
-            ->findOrFail($id);
+        $note = Helper::isAdmin()
+            ? Note::with(['client', 'bike'])
+                ->findOrFail($id)
+            : Note::with(['client', 'bike'])
+                ->where('client_id', Auth::id())
+                ->findOrFail($id);
 
         return view('note.show', [
             'note' => $note,
+            'bikes' => $this->bikes(),
         ]);
     }
 
@@ -93,10 +110,11 @@ class Notes extends Controller {
      */
     public function edit(int $id): View
     {
-        $note = Note::findOrFail($id);
+        $note = Note::where('client_id', Auth::id())
+            ->findOrFail($id);
 
         return view('note.edit', [
-            'note'  => $note,
+            'note' => $note,
             'bikes' => $this->bikes(),
         ]);
     }
@@ -111,6 +129,10 @@ class Notes extends Controller {
     public function update(NoteUpdateRequest $request, int $id): RedirectResponse
     {
         $data = $request->validated();
+
+        if (!is_null($data['note_date'] ?: null)) {
+            $data['created_at'] = strtotime($data['note_date']);
+        }
 
         $note = Note::find($id);
 

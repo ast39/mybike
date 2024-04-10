@@ -24,10 +24,11 @@ class NoteUpdateRequest extends FormRequest
     {
         return [
 
-            'bike_id'    => 'integer|nullable',
-            'title'      => 'string|nullable',
-            'additional' => 'string|nullable',
-            'mileage'    => 'integer|nullable',
+            'bike_id' => ['integer', 'nullable', 'exists:bikes,bike_id'],
+            'title' => ['string', 'nullable'],
+            'note_date' => ['date', 'nullable'],
+            'additional' => ['string', 'nullable'],
+            'mileage' => ['integer', 'nullable'],
         ];
     }
 }

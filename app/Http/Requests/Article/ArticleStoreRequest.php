@@ -24,14 +24,14 @@ class ArticleStoreRequest extends FormRequest
     {
         return [
 
-            'bike_id'    => 'integer|required',
-            'article'    => 'string|required',
-            'title'      => 'string|required',
-            'price'      => [
+            'bike_id' => ['integer', 'required', 'exists:bikes,bike_id'],
+            'article' => ['string', 'required'],
+            'title' => ['string', 'required'],
+            'price' => [
                 'nullable',
                 'regex:/^[-+]?\d+(\.\d{1,2})?$/',
             ],
-            'additional' => 'string|nullable',
+            'additional' => ['string', 'nullable'],
         ];
     }
 }

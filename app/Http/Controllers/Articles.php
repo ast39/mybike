@@ -7,6 +7,7 @@ use App\Http\Requests\Article\ArticleFilterRequest;
 use App\Http\Requests\Article\ArticleStoreRequest;
 use App\Http\Requests\Article\ArticleUpdateRequest;
 use App\Http\Traits\Dictionarable;
+use App\Libs\Helper;
 use App\Models\Article;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Http\RedirectResponse;
@@ -33,11 +34,19 @@ class Articles extends Controller {
             'queryParams' => array_filter($data)
         ]);
 
-        return view('article.index', [
-            'articles' => Article::with('bike')
+        $articles = Helper::isAdmin()
+            ? Article::with('bike')
                 ->filter($filter)
-                ->orderBy('title')
-                ->paginate(20),
+                ->orderByDesc('created_at')
+                ->paginate(config('limits.articles'))
+            : Article::with('bike')
+                ->where('client_id', Auth::id())
+                ->filter($filter)
+                ->orderByDesc('created_at')
+                ->paginate(config('limits.articles'));
+
+        return view('article.index', [
+            'articles' => $articles,
             'bikes' => $this->bikes(),
         ]);
     }
@@ -77,11 +86,16 @@ class Articles extends Controller {
      */
     public function show(int $id): View
     {
-        $article = Article::with(['bike'])
-            ->findOrFail($id);
+        $article = Helper::isAdmin()
+            ? Article::with(['bike'])
+                ->findOrFail($id)
+            : Article::with(['bike'])
+                ->where('client_id', Auth::id())
+                ->findOrFail($id);
 
         return view('article.show', [
             'article' => $article,
+            'bikes'    => $this->bikes(),
         ]);
     }
 
@@ -93,11 +107,12 @@ class Articles extends Controller {
      */
     public function edit(int $id): View
     {
-        $article = Article::findOrFail($id);
+        $article = Article::where('client_id', Auth::id())
+            ->findOrFail($id);
 
         return view('article.edit', [
             'article' => $article,
-            'bikes'   => $this->bikes(),
+            'bikes'    => $this->bikes(),
         ]);
     }
 

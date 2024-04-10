@@ -24,9 +24,10 @@ class ServiceFilterRequest extends FormRequest
     {
         return [
 
-            'bike'    => 'nullable|integer',
-            'service' => 'nullable|string',
-            'status'  => 'nullable|integer',
+            'bike' => ['nullable', 'integer'],
+            'title' => ['nullable', 'integer'],
+            'service' => ['nullable', 'string'],
+            'status' => ['nullable', 'integer'],
         ];
     }
 }

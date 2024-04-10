@@ -36,7 +36,7 @@ class Service extends Model {
     }
 
     /**
-     * Байк
+     * Машина
      *
      * @return BelongsTo
      */
@@ -57,7 +57,7 @@ class Service extends Model {
     ];
 
     protected $fillable = [
-        'record_id', 'client_id', 'bike_id', 'service_title', 'work_list', 'mileage', 'price', 'status', 'additional',
+        'record_id', 'client_id', 'bike_id', 'service_title', 'title', 'work_list', 'mileage', 'price', 'status', 'additional',
         'created_at', 'updated_at',
     ];
 
