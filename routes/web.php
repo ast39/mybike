@@ -114,5 +114,5 @@ Auth::routes(['verify' => true]);
 
 
 if (app()->isProduction()) {
-    URL::forceScheme('https');
+    \Illuminate\Support\Facades\URL::forceScheme('https');
 }
