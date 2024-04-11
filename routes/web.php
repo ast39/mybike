@@ -111,3 +111,8 @@ Route::group(['prefix' => 'notes', 'middleware' => ['auth']], function () {
 });
 
 Auth::routes(['verify' => true]);
+
+
+if (app()->isProduction()) {
+    URL::forceScheme('https');
+}
