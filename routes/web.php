@@ -1,17 +1,17 @@
 <?php
 
-use App\Http\Controllers\Admin;
 use App\Http\Controllers\Clients;
 use App\Http\Controllers\DemoController;
 use App\Http\Controllers\Gasoline;
 use App\Http\Controllers\Payments;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\Bikes;
 use App\Http\Controllers\Services;
 use App\Http\Controllers\Articles;
 use App\Http\Controllers\Notes;
+use Illuminate\Routing\Route;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\URL;
 
 /*
 |--------------------------------------------------------------------------
@@ -110,9 +110,8 @@ Route::group(['prefix' => 'notes', 'middleware' => ['auth']], function () {
     Route::delete('{id}', [Notes::class, 'destroy'])->name('note.destroy');
 });
 
-Auth::routes(['verify' => true]);
+Auth::routes();
 
-
-if (app()->isProduction()) {
-    \Illuminate\Support\Facades\URL::forceScheme('https');
+if (env('APP_ENV') === 'production') {
+    URL::forceScheme('https');
 }
