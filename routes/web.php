@@ -7,6 +7,7 @@ use App\Http\Controllers\Gasoline;
 use App\Http\Controllers\Payments;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\URL;
 
 use App\Http\Controllers\Bikes;
 use App\Http\Controllers\Services;
@@ -110,4 +111,8 @@ Route::group(['prefix' => 'notes', 'middleware' => ['auth']], function () {
     Route::delete('{id}', [Notes::class, 'destroy'])->name('note.destroy');
 });
 
-Auth::routes(['verify' => true]);
+Auth::routes();
+
+if (env('APP_ENV') === 'production') {
+    URL::forceScheme('https');
+}
